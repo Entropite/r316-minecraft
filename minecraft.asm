@@ -259,44 +259,25 @@ __tptcc_fn_plot_square:
 	push base_pointer
 	mov base_pointer, stack_pointer
 	push r1
-	ld r24, base_pointer, 4
-	ld r1, base_pointer, 3
-	mull r1, 2
-	mov r23, r1
+	push r2
+	push r3
 	ld r1, base_pointer, 2
-	mull r1, 2
-	mov r22, r1
-	call __tptcc_fn_plot
-	ld r24, base_pointer, 4
-	ld r1, base_pointer, 3
-	mull r1, 2
-	mov r23, r1
-	ld r1, base_pointer, 2
-	mull r1, 2
+	ld r2, base_pointer, 3
+	ld r3, base_pointer, 4
+	shl r1, 1
+	shl r2, 9
+	add r1, r2
+	st r1, r3, term_plot
 	add r1, 1
-	mov r22, r1
-	call __tptcc_fn_plot
-	ld r24, base_pointer, 4
-	ld r1, base_pointer, 3
-	mull r1, 2
-	add r1, 1
-	mov r23, r1
-	ld r1, base_pointer, 2
-	mull r1, 2
-	mov r22, r1
-	call __tptcc_fn_plot
-	ld r24, base_pointer, 4
-	ld r1, base_pointer, 3
-	mull r1, 2
-	add r1, 1
-	mov r23, r1
-	ld r1, base_pointer, 2
-	mull r1, 2
-	add r1, 1
-	mov r22, r1
-	call __tptcc_fn_plot
-.exit_plot_square:
+	st r1, r3, term_plot
+	add r1, 0x100
+	st r1, r3, term_plot
+	sub r1, 1
+	st r1, r3, term_plot
+	pop r3
+	pop r2
 	pop r1
+.exit_plot_square:
 	pop base_pointer
 	ret
 __tptcc_fn_arithmetic_right_shift:
@@ -311,16 +292,16 @@ __tptcc_fn_arithmetic_right_shift:
 	jl .label_13
 	jmp .label_12
 	.label_13:
-	ld r1, base_pointer, 2
+	ld r3, base_pointer, 2
+	ld r1, base_pointer, 3
+	shr r3, r1
+	mov r4, 65535
+	mov r1, 16
 	ld r2, base_pointer, 3
-	shr r1, r2
-	mov r2, 65535
-	mov r3, 16
-	ld r4, base_pointer, 3
-	sub r3, r4
-	shl r2, r3
-	or r1, r2
-	mov return_reg, r1
+	sub r1, r2
+	shl r4, r1
+	or r3, r4
+	mov return_reg, r3
 	jmp .exit_arithmetic_right_shift
 	jmp .label_14
 	.label_12:
@@ -360,11 +341,12 @@ __tptcc_fn_sin:
 	jle .label_19
 	jmp .label_18
 	.label_19:
-	mov r1, 2396
-	mov r2, 804
-	ld r3, base_pointer, 2
-	sub r2, r3
-	ld r1, r1, r2
+	mov r2, 2396
+	mov r3, 804
+	ld r1, base_pointer, 2
+	sub r3, r1
+	mov r1, r2
+	ld r1, r1, r3
 	mov return_reg, r1
 	jmp .exit_sin
 	jmp .label_20
@@ -436,12 +418,12 @@ __tptcc_fn_add_vector:
 	push r1
 	push r2
 	push r3
-	ld r2, base_pointer, 2
-	ld r1, base_pointer, 3
-	ld r3, r2
-	ld r1, r1
-	add r3, r1
-	st r3, r2
+	ld r1, base_pointer, 2
+	ld r2, base_pointer, 3
+	ld r3, r1
+	ld r2, r2
+	add r3, r2
+	st r3, r1
 	ld r1, base_pointer, 2
 	add r1, 1
 	ld r2, base_pointer, 3
@@ -450,14 +432,14 @@ __tptcc_fn_add_vector:
 	ld r2, r2
 	add r3, r2
 	st r3, r1
-	ld r1, base_pointer, 2
-	add r1, 2
-	ld r2, base_pointer, 3
+	ld r2, base_pointer, 2
 	add r2, 2
-	ld r3, r1
-	ld r2, r2
-	add r3, r2
-	st r3, r1
+	ld r1, base_pointer, 3
+	add r1, 2
+	ld r3, r2
+	ld r1, r1
+	add r3, r1
+	st r3, r2
 .exit_add_vector:
 	pop r3
 	pop r2
@@ -614,29 +596,28 @@ __tptcc_fn_get_vector_length:
 	push base_pointer
 	mov base_pointer, stack_pointer
 	push r1
-	push r3
 	push r2
+	push r3
 	push r4
 	ld r1, base_pointer, 2
 	ld r1, r1, 0
 	shl r1, 1
-	mov r3, r1
-	ld r1, base_pointer, 2
-	ld r1, r1, 1
-	shl r1, 1
+	ld r2, base_pointer, 2
+	ld r2, r2, 1
+	shl r2, 1
+	ld r3, base_pointer, 2
+	ld r3, r3, 2
+	shl r3, 1
 	mov r4, r1
-	ld r1, base_pointer, 2
-	ld r1, r1, 2
-	shl r1, 1
+	mull r4, r1
+	mov r1, r2
+	mull r1, r2
+	add r4, r1
 	mov r2, r3
-	mull r2, r3
-	mov r3, r4
-	mull r3, r4
-	add r2, r3
-	mov r3, r1
-	mull r3, r1
-	add r2, r3
-	push r2
+	mov r1, r3
+	mull r2, r1
+	add r4, r2
+	push r4
 	call __tptcc_fn_sqrt
 	add stack_pointer, 1
 	mov r1, return_reg
@@ -644,8 +625,8 @@ __tptcc_fn_get_vector_length:
 	jmp .exit_get_vector_length
 .exit_get_vector_length:
 	pop r4
-	pop r2
 	pop r3
+	pop r2
 	pop r1
 	pop base_pointer
 	ret
@@ -660,12 +641,12 @@ __tptcc_fn_scale_vector:
 	ld r3, base_pointer, 3
 	mull r2, r3
 	st r2, r1
-	ld r2, base_pointer, 2
-	add r2, 1
-	ld r3, r2
-	ld r1, base_pointer, 3
-	mull r3, r1
-	st r3, r2
+	ld r1, base_pointer, 2
+	add r1, 1
+	ld r2, r1
+	ld r3, base_pointer, 3
+	mull r2, r3
+	st r2, r1
 	ld r1, base_pointer, 2
 	add r1, 2
 	ld r2, r1
@@ -756,37 +737,36 @@ __tptcc_fn_divide_vector:
 	jl .label_35
 	jmp .label_34
 	.label_35:
-	ld r2, base_pointer, 2
-	add r2, 1
 	ld r1, base_pointer, 2
 	add r1, 1
-	ld r3, r1
-	xor r3, 65535
-	add r3, 1
-	ld r4, base_pointer, 3
+	ld r2, base_pointer, 2
+	ld r2, r2, 1
+	xor r2, 65535
+	add r2, 1
+	ld r3, base_pointer, 3
+	mov r4, 0
 	mov r5, 0
-	mov r6, 0
-	mov r7, 15
+	mov r6, 15
 	.label_37:
-	cmp r7, 0
+	cmp r6, 0
 	jl .label_39
-	shl r6, 1
-	shr r1, r3, r7
-	and r1, 1
-	or r6, r1
-	cmp r6, r4
+	shl r5, 1
+	shr r7, r2, r6
+	and r7, 1
+	or r5, r7
+	cmp r5, r3
 	jl .label_38
-	sub r6, r4
-	mov r1, 1
-	shl r1, r7
-	or r5, r1
+	sub r5, r3
+	mov r7, 1
+	shl r7, r6
+	or r4, r7
 	.label_38:
-	sub r7, 1
+	sub r6, 1
 	jmp .label_37
 	.label_39:
-	xor r5, 65535
-	add r5, 1
-	st r5, r2
+	xor r4, 65535
+	add r4, 1
+	st r4, r1
 	jmp .label_36
 	.label_34:
 	ld r1, base_pointer, 2
@@ -2677,65 +2657,66 @@ __tptcc_fn_draw_compacted_sprite:
 	push r5
 	push r6
 	push r7
-	mov r5, 0
+	mov r3, 0
 	.label_342:
-	mov r1, r5
+	mov r1, r3
 	cmp r1, 16
 	jl .label_345
 	jmp .label_344
 	.label_345:
-	mov r6, 0
+	mov r4, 0
 	.label_346:
-	mov r1, r6
+	mov r1, r4
 	cmp r1, 4
 	jl .label_349
 	jmp .label_348
 	.label_349:
 	ld r1, base_pointer, 4
-	mov r2, r5
+	mov r2, r3
 	mull r2, 4
 	add r1, r2
-	add r1, r6
-	ld r7, r1
-	mov r1, 0
+	add r1, r4
+	ld r5, r1
+	mov r6, 0
 	.label_350:
-	mov r2, r1
-	cmp r2, 4
+	mov r1, r6
+	cmp r1, 4
 	jl .label_353
 	jmp .label_352
 	.label_353:
-	mov r2, r7
-	mov r3, 4
-	mov r4, 3
-	sub r4, r1
-	mull r3, r4
-	shr r2, r3
-	mov r3, 15
-	and r2, r3
-	mov r24, r2
-	ld r2, base_pointer, 3
-	add r2, r5
-	mov r23, r2
-	ld r2, base_pointer, 2
-	mov r3, r6
-	mull r3, 4
-	add r2, r3
-	add r2, r1
-	mov r22, r2
+	mov r2, r5
+	mov r7, 4
+	mov r1, 3
+	sub r1, r6
+	mull r7, r1
+	shr r2, r7
+	mov r1, 15
+	and r2, r1
+	mov r1, r2
+	mov r24, r1
+	ld r1, base_pointer, 3
+	add r1, r3
+	mov r23, r1
+	ld r1, base_pointer, 2
+	mov r2, r4
+	mull r2, 4
+	add r1, r2
+	add r1, r6
+	mov r22, r1
 	call __tptcc_fn_plot
 	.label_351:
-	mov r2, r1
-	add r1, 1
+	mov r1, r6
+	add r6, 1
 	jmp .label_350
 	.label_352:
 	.label_347:
-	mov r1, r6
-	add r6, 1
+	mov r1, r4
+	add r4, 1
 	jmp .label_346
 	.label_348:
 	.label_343:
-	mov r1, r5
-	add r5, 1
+	mov r1, r3
+	add r3, 1
 	jmp .label_342
 	.label_344:
 .exit_draw_compacted_sprite:
@@ -2763,84 +2744,85 @@ __tptcc_fn_draw_digit:
 	ld r2, base_pointer, 2
 	shl r2, 1
 	add r1, r2
-	ld r5, r1
+	ld r4, r1
 	mov r1, 2805
 	ld r2, base_pointer, 2
 	shl r2, 1
 	add r2, 1
 	add r1, r2
-	ld r6, r1
-	mov r7, 0
+	ld r5, r1
+	mov r6, 0
 	.label_354:
-	mov r1, r7
+	mov r1, r6
 	cmp r1, 4
 	jl .label_357
 	jmp .label_356
 	.label_357:
-	mov r8, 0
+	mov r7, 0
 	.label_358:
-	mov r1, r8
+	mov r1, r7
 	cmp r1, 4
 	jl .label_361
 	jmp .label_360
 	.label_361:
-	mov r1, r5
+	mov r1, r4
 	mov r2, 4
 	mov r3, 3
-	sub r3, r8
+	sub r3, r7
 	mull r2, r3
 	add r2, 3
-	sub r2, r7
+	sub r2, r6
 	shr r1, r2
 	mov r2, 1
 	and r1, r2
-	mov r2, r6
-	mov r3, 4
-	mov r4, 3
-	sub r4, r8
-	mull r3, r4
-	add r3, 3
+	mov r8, r1
+	mov r1, r5
+	mov r2, 4
+	mov r3, 3
 	sub r3, r7
-	shr r2, r3
-	mov r3, 1
-	and r2, r3
-	cmp r1, 0
+	mull r2, r3
+	add r2, 3
+	sub r2, r6
+	shr r1, r2
+	mov r2, 1
+	and r1, r2
+	cmp r8, 0
 	je .label_362
 	.label_363:
 	mov r24, 15
-	ld r1, base_pointer, 4
-	add r1, r8
-	mov r23, r1
-	ld r1, base_pointer, 3
-	add r1, r7
-	mov r22, r1
+	ld r2, base_pointer, 4
+	add r2, r7
+	mov r23, r2
+	ld r2, base_pointer, 3
+	add r2, r6
+	mov r22, r2
 	call __tptcc_fn_plot
 	jmp .label_364
 	.label_362:
 	.label_364:
-	cmp r2, 0
+	cmp r1, 0
 	je .label_365
 	.label_366:
 	mov r24, 15
 	ld r1, base_pointer, 4
 	add r1, 4
-	add r1, r8
+	add r1, r7
 	mov r23, r1
 	ld r1, base_pointer, 3
-	add r1, r7
+	add r1, r6
 	mov r22, r1
 	call __tptcc_fn_plot
 	jmp .label_367
 	.label_365:
 	.label_367:
 	.label_359:
-	mov r1, r8
-	add r8, 1
+	mov r1, r7
+	add r7, 1
 	jmp .label_358
 	.label_360:
 	.label_355:
-	mov r1, r7
-	add r7, 1
+	mov r1, r6
+	add r6, 1
 	jmp .label_354
 	.label_356:
 .exit_draw_digit:
@@ -2869,16 +2851,16 @@ __tptcc_fn_draw_item:
 	push r1
 	call __tptcc_fn_draw_compacted_sprite
 	add stack_pointer, 3
-	ld r1, base_pointer, 6
-	mulh r2, r1, 6553
-	mul r3, r2, 10
-	sub r3, r1, r3
-	cmp r3, 10
+	ld r3, base_pointer, 6
+	mulh r1, r3, 6553
+	mul r2, r1, 10
+	sub r2, r3, r2
+	cmp r2, 10
 	ja .label_368
-	add r2, 1
-	sub r3, 10
+	add r1, 1
+	sub r2, 10
 	.label_368:
-	st r2, base_pointer, 1
+	st r1, base_pointer, 1
 	ld r1, base_pointer, 6
 	ld r2, base_pointer, 1
 	mull r2, 10
@@ -2924,62 +2906,61 @@ __tptcc_fn_draw_cursor:
 	mov base_pointer, stack_pointer
 	push r1
 	push r2
+	push r6
 	push r3
 	push r4
 	push r5
-	push r6
 	mov r1, 58
 	ld r2, base_pointer, 2
 	shr r2, 1
 	sub r1, r2
-	mov r2, 58
-	ld r3, base_pointer, 2
-	shr r3, 1
-	add r2, r3
-	mov r3, r2
+	mov r5, r1
+	mov r1, 58
+	ld r2, base_pointer, 2
+	shr r2, 1
+	add r1, r2
+	mov r3, 58
 	mov r4, 58
-	mov r5, 58
-	mov r6, r1
 	.label_372:
-	mov r1, r6
-	cmp r1, r3
+	mov r2, r5
+	cmp r2, r1
 	jle .label_375
 	jmp .label_374
 	.label_375:
-	mov r1, r4
+	mov r2, r3
 	.label_376:
-	mov r2, r1
-	cmp r2, r5
+	mov r6, r2
+	cmp r6, r4
 	jle .label_379
 	jmp .label_378
 	.label_379:
-	mov r2, 15
-	push r2
-	push r1
+	mov r6, 15
 	push r6
+	push r2
+	push r5
 	call __tptcc_fn_plot_square
 	add stack_pointer, 3
-	mov r2, 15
-	push r2
+	mov r6, 15
 	push r6
-	push r1
+	push r5
+	push r2
 	call __tptcc_fn_plot_square
 	add stack_pointer, 3
 	.label_377:
-	mov r2, r1
-	add r1, 1
+	mov r6, r2
+	add r2, 1
 	jmp .label_376
 	.label_378:
 	.label_373:
-	mov r1, r6
-	add r6, 1
+	mov r2, r5
+	add r5, 1
 	jmp .label_372
 	.label_374:
 .exit_draw_cursor:
-	pop r6
 	pop r5
 	pop r4
 	pop r3
+	pop r6
 	pop r2
 	pop r1
 	pop base_pointer
@@ -3015,53 +2996,53 @@ __tptcc_fn_generate_tree:
 	add r1, 1
 	jmp .label_380
 	.label_382:
-	mov r5, 65535
+	mov r2, 65535
 	.label_384:
-	mov r2, r5
-	cmp r2, 2
+	mov r1, r2
+	cmp r1, 2
 	jl .label_387
 	jmp .label_386
 	.label_387:
-	mov r1, 65535
+	mov r3, 65535
 	.label_388:
-	mov r2, r1
-	cmp r2, 2
+	mov r1, r3
+	cmp r1, 2
 	jl .label_391
 	jmp .label_390
 	.label_391:
-	mov r2, 3
+	mov r4, 3
 	.label_392:
-	mov r3, r2
-	cmp r3, 5
+	mov r1, r4
+	cmp r1, 5
 	jl .label_395
 	jmp .label_394
 	.label_395:
-	mov r3, 4
-	push r3
-	ld r3, base_pointer, 4
-	add r3, r1
-	push r3
-	ld r3, base_pointer, 3
-	sub r3, r2
-	push r3
-	ld r3, base_pointer, 2
-	add r3, r5
-	push r3
+	mov r1, 4
+	push r1
+	ld r1, base_pointer, 4
+	add r1, r3
+	push r1
+	ld r1, base_pointer, 3
+	sub r1, r4
+	push r1
+	ld r1, base_pointer, 2
+	add r1, r2
+	push r1
 	call __tptcc_fn_set_block
 	add stack_pointer, 4
 	.label_393:
-	mov r3, r2
-	add r2, 1
+	mov r1, r4
+	add r4, 1
 	jmp .label_392
 	.label_394:
 	.label_389:
-	mov r2, r1
-	add r1, 1
+	mov r1, r3
+	add r3, 1
 	jmp .label_388
 	.label_390:
 	.label_385:
-	mov r1, r5
-	add r5, 1
+	mov r1, r2
+	add r2, 1
 	jmp .label_384
 	.label_386:
 .exit_generate_tree:
@@ -3205,52 +3186,52 @@ __tptcc_fn_add_to_inventory:
 	sub r1, 1
 	jmp .label_402
 	.label_404:
-	mov r1, 3
+	mov r5, 3
 	.label_417:
-	mov r2, r1
-	cmp r2, 0
+	mov r1, r5
+	cmp r1, 0
 	jge .label_420
 	jmp .label_419
 	.label_420:
-	mov r2, 0
+	mov r6, 0
 	.label_421:
-	mov r3, r2
-	cmp r3, 9
+	mov r1, r6
+	cmp r1, 9
 	jl .label_424
 	jmp .label_423
 	.label_424:
-	mov r3, 2352
-	mov r4, r1
-	mull r4, 9
-	add r3, r4
-	ld r3, r3, r2
-	shr r3, 8
-	cmp r3, 0
+	mov r1, 2352
+	mov r2, r5
+	mull r2, 9
+	add r1, r2
+	ld r1, r1, r6
+	shr r1, 8
+	cmp r1, 0
 	je .label_426
 	jmp .label_425
 	.label_426:
-	ld r3, base_pointer, 3
-	push r3
-	mov r3, 64
-	push r3
+	ld r1, base_pointer, 3
+	push r1
+	mov r1, 64
+	push r1
 	call __tptcc_fn_min
 	add stack_pointer, 2
-	mov r3, return_reg
-	mov r4, 2352
-	mov r5, r1
-	mull r5, 9
-	add r4, r5
-	add r4, r2
-	ld r5, base_pointer, 2
-	shl r5, 8
-	mov r6, r3
-	or r5, r6
-	st r5, r4
-	ld r4, base_pointer, 3
-	sub r4, r3
-	st r4, base_pointer, 3
-	ld r3, base_pointer, 3
-	cmp r3, 0
+	mov r1, return_reg
+	mov r2, 2352
+	mov r3, r5
+	mull r3, 9
+	add r2, r3
+	add r2, r6
+	ld r3, base_pointer, 2
+	shl r3, 8
+	mov r4, r1
+	or r3, r4
+	st r3, r2
+	ld r2, base_pointer, 3
+	sub r2, r1
+	st r2, base_pointer, 3
+	ld r1, base_pointer, 3
+	cmp r1, 0
 	je .label_429
 	jmp .label_428
 	.label_429:
@@ -3262,13 +3243,13 @@ __tptcc_fn_add_to_inventory:
 	.label_425:
 	.label_427:
 	.label_422:
-	mov r3, r2
-	add r2, 1
+	mov r1, r6
+	add r6, 1
 	jmp .label_421
 	.label_423:
 	.label_418:
-	mov r2, r1
-	sub r1, 1
+	mov r1, r5
+	sub r5, 1
 	jmp .label_417
 	.label_419:
 .exit_add_to_inventory:
@@ -3330,19 +3311,20 @@ __tptcc_fn_place_block:
 	mov r1, 2352
 	add r1, 27
 	mov r2, 2352
+	ld r2, r2, 37
+	add r1, r2
+	ld r2, r1
+	mov r3, 1
+	sub r2, r3
+	st r2, r1
+	mov r1, 2352
+	add r1, 27
+	mov r2, 2352
 	add r2, 37
 	mov r3, r1
 	ld r1, r2
 	add r3, r1
 	ld r1, r3
-	mov r2, 1
-	sub r1, r2
-	st r1, r3
-	mov r1, 2352
-	add r1, 27
-	mov r2, 2352
-	ld r2, r2, 37
-	ld r1, r1, r2
 	mov r2, 255
 	and r1, r2
 	cmp r1, 0
@@ -3429,39 +3411,39 @@ __tptcc_fn_draw_rectangle:
 	push r3
 	push r4
 	push r5
-	ld r2, base_pointer, 6
-	mov r3, 0
+	ld r4, base_pointer, 6
+	mov r5, 0
 	.label_441:
-	mov r1, r3
-	ld r4, base_pointer, 5
-	cmp r1, r4
+	mov r1, r5
+	ld r2, base_pointer, 5
+	cmp r1, r2
 	jl .label_444
 	jmp .label_443
 	.label_444:
 	mov r1, 0
 	.label_445:
-	mov r4, r1
-	ld r5, base_pointer, 4
-	cmp r4, r5
+	mov r2, r1
+	ld r3, base_pointer, 4
+	cmp r2, r3
 	jl .label_448
 	jmp .label_447
 	.label_448:
-	mov r24, r2
-	ld r4, base_pointer, 3
-	add r4, r3
-	mov r23, r4
-	ld r4, base_pointer, 2
-	add r4, r1
-	mov r22, r4
+	mov r24, r4
+	ld r2, base_pointer, 3
+	add r2, r5
+	mov r23, r2
+	ld r2, base_pointer, 2
+	add r2, r1
+	mov r22, r2
 	call __tptcc_fn_plot
 	.label_446:
-	mov r4, r1
+	mov r2, r1
 	add r1, 1
 	jmp .label_445
 	.label_447:
 	.label_442:
-	mov r1, r3
-	add r3, 1
+	mov r1, r5
+	add r5, 1
 	jmp .label_441
 	.label_443:
 .exit_draw_rectangle:
@@ -3476,21 +3458,21 @@ __tptcc_fn_draw_hotbar:
 	push base_pointer
 	mov base_pointer, stack_pointer
 	push r1
-	push r2
 	push r3
+	push r4
+	push r2
 	push r5
 	push r6
-	push r4
-	ld r5, base_pointer, 2
-	ld r6, base_pointer, 3
+	ld r3, base_pointer, 2
+	ld r4, base_pointer, 3
 	mov r1, 8
 	push r1
 	mov r1, 2
 	push r1
 	mov r1, 184
 	push r1
-	push r6
-	push r5
+	push r4
+	push r3
 	call __tptcc_fn_draw_rectangle
 	add stack_pointer, 5
 	mov r1, 8
@@ -3499,10 +3481,10 @@ __tptcc_fn_draw_hotbar:
 	push r1
 	mov r1, 184
 	push r1
-	mov r1, r6
+	mov r1, r4
 	add r1, 18
 	push r1
-	push r5
+	push r3
 	call __tptcc_fn_draw_rectangle
 	add stack_pointer, 5
 	mov r1, 8
@@ -3511,10 +3493,10 @@ __tptcc_fn_draw_hotbar:
 	push r1
 	mov r1, 4
 	push r1
-	mov r1, r6
+	mov r1, r4
 	add r1, 2
 	push r1
-	mov r1, r5
+	mov r1, r3
 	add r1, 180
 	push r1
 	call __tptcc_fn_draw_rectangle
@@ -3525,136 +3507,136 @@ __tptcc_fn_draw_hotbar:
 	push r1
 	mov r1, 24
 	push r1
-	push r6
+	push r4
 	mov r1, 2352
 	ld r1, r1, 37
 	mull r1, 20
-	add r1, r5
+	add r1, r3
 	push r1
 	call __tptcc_fn_draw_rectangle
 	add stack_pointer, 5
-	mov r1, 0
+	mov r5, 0
 	.label_449:
-	mov r2, r1
-	cmp r2, 9
+	mov r1, r5
+	cmp r1, 9
 	jl .label_452
 	jmp .label_451
 	.label_452:
-	mov r2, 2352
-	add r2, 27
-	ld r2, r2, r1
-	shr r2, 8
-	mov r3, r2
-	cmp r3, 0
+	mov r1, 2352
+	add r1, 27
+	ld r1, r1, r5
+	shr r1, 8
+	mov r6, r1
+	mov r1, r6
+	cmp r1, 0
 	jg .label_454
 	jmp .label_453
 	.label_454:
-	mov r3, r2
-	cmp r3, 10
+	mov r1, r6
+	cmp r1, 10
 	je .label_457
 	jmp .label_456
 	.label_457:
-	mov r2, 1857
+	mov r1, 1857
 	jmp .label_458
 	.label_456:
-	mov r3, 2337
-	add r3, r2
-	ld r2, r3
+	mov r1, 2337
+	ld r1, r1, r6
 	.label_458:
-	push r2
-	mov r2, 2352
-	add r2, 27
-	ld r2, r2, r1
-	mov r3, 255
-	and r2, r3
-	push r2
-	mov r2, 2
-	add r2, r6
-	push r2
-	mov r2, r1
-	mull r2, 20
-	add r2, 4
-	add r2, r5
-	push r2
+	push r1
+	mov r1, 2352
+	add r1, 27
+	ld r1, r1, r5
+	mov r2, 255
+	and r1, r2
+	push r1
+	mov r1, 2
+	add r1, r4
+	push r1
+	mov r1, r5
+	mull r1, 20
+	add r1, 4
+	add r1, r3
+	push r1
 	call __tptcc_fn_draw_item
 	add stack_pointer, 4
 	jmp .label_455
 	.label_453:
-	mov r2, 7
-	push r2
-	mov r2, 16
-	push r2
-	mov r2, 16
-	push r2
-	mov r2, 2
-	add r2, r6
-	push r2
-	mov r2, r1
-	mull r2, 20
-	add r2, 4
-	add r2, r5
-	push r2
+	mov r1, 7
+	push r1
+	mov r1, 16
+	push r1
+	mov r1, 16
+	push r1
+	mov r1, 2
+	add r1, r4
+	push r1
+	mov r1, r5
+	mull r1, 20
+	add r1, 4
+	add r1, r3
+	push r1
 	call __tptcc_fn_draw_rectangle
 	add stack_pointer, 5
 	.label_455:
-	mov r2, r1
-	mov r3, 2352
-	ld r3, r3, 37
-	cmp r2, r3
+	mov r1, r5
+	mov r2, 2352
+	ld r2, r2, 37
+	cmp r1, r2
 	je .label_460
 	.label_462:
-	mov r2, r1
-	sub r2, 1
-	mov r3, 2352
-	ld r3, r3, 37
-	cmp r2, r3
+	mov r1, r5
+	sub r1, 1
+	mov r2, 2352
+	ld r2, r2, 37
+	cmp r1, r2
 	je .label_460
 	jmp .label_459
 	.label_460:
-	mov r2, 15
-	push r2
-	mov r2, 16
-	push r2
-	mov r2, 4
-	push r2
-	mov r2, 2
-	add r2, r6
-	push r2
-	mov r2, r1
-	mull r2, 20
-	add r2, r5
-	push r2
+	mov r1, 15
+	push r1
+	mov r1, 16
+	push r1
+	mov r1, 4
+	push r1
+	mov r1, 2
+	add r1, r4
+	push r1
+	mov r1, r5
+	mull r1, 20
+	add r1, r3
+	push r1
 	call __tptcc_fn_draw_rectangle
 	add stack_pointer, 5
 	jmp .label_461
 	.label_459:
-	mov r2, 8
-	push r2
-	mov r2, 16
-	push r2
-	mov r2, 4
-	push r2
-	mov r2, 2
-	add r2, r6
-	push r2
-	mov r2, r1
-	mull r2, 20
-	add r2, r5
-	push r2
+	mov r1, 8
+	push r1
+	mov r1, 16
+	push r1
+	mov r1, 4
+	push r1
+	mov r1, 2
+	add r1, r4
+	push r1
+	mov r1, r5
+	mull r1, 20
+	add r1, r3
+	push r1
 	call __tptcc_fn_draw_rectangle
 	add stack_pointer, 5
 	.label_461:
 	.label_450:
-	mov r2, r1
-	add r1, 1
+	mov r1, r5
+	add r5, 1
 	jmp .label_449
 	.label_451:
 .exit_draw_hotbar:
-	pop r4
 	pop r6
 	pop r5
-	pop r3
 	pop r2
+	pop r4
+	pop r3
 	pop r1
 	pop base_pointer
 	ret
@@ -3892,29 +3874,29 @@ __tptcc_fn_create_house:
 	jge .label_480
 	jmp .label_479
 	.label_480:
-	mov r3, 1
+	mov r1, 1
 	.label_482:
-	mov r1, r3
-	cmp r1, 4
+	mov r2, r1
+	cmp r2, 4
 	jl .label_485
 	jmp .label_484
 	.label_485:
-	mov r1, 12
-	push r1
-	ld r1, base_pointer, 4
-	add r1, r3
-	push r1
-	ld r1, base_pointer, 3
-	sub r1, 1
-	push r1
-	ld r1, base_pointer, 2
-	add r1, 3
-	push r1
+	mov r2, 12
+	push r2
+	ld r2, base_pointer, 4
+	add r2, r1
+	push r2
+	ld r2, base_pointer, 3
+	sub r2, 1
+	push r2
+	ld r2, base_pointer, 2
+	add r2, 3
+	push r2
 	call __tptcc_fn_set_block
 	add stack_pointer, 4
 	.label_483:
-	mov r1, r3
-	add r3, 1
+	mov r2, r1
+	add r1, 1
 	jmp .label_482
 	.label_484:
 	mov r1, 0
@@ -4010,59 +3992,60 @@ __tptcc_fn_create_pyramid:
 	push r3
 	push r4
 	push r5
-	mov r5, 0
+	mov r2, 0
 	.label_490:
-	mov r1, r5
-	ld r2, base_pointer, 5
-	cmp r1, r2
+	mov r1, r2
+	ld r3, base_pointer, 5
+	cmp r1, r3
 	jl .label_493
 	jmp .label_492
 	.label_493:
 	mov r1, 2
-	ld r2, base_pointer, 5
-	mull r1, r2
+	ld r3, base_pointer, 5
+	mull r1, r3
 	sub r1, 1
-	sub r1, r5
-	mov r2, r5
+	sub r1, r2
+	mov r3, r1
+	mov r4, r2
 	.label_494:
-	mov r3, r2
-	cmp r3, r1
+	mov r1, r4
+	cmp r1, r3
 	jl .label_497
 	jmp .label_496
 	.label_497:
-	mov r3, r5
+	mov r5, r2
 	.label_498:
-	mov r4, r3
-	cmp r4, r1
+	mov r1, r5
+	cmp r1, r3
 	jl .label_501
 	jmp .label_500
 	.label_501:
-	mov r4, 14
-	push r4
-	ld r4, base_pointer, 4
-	add r4, r3
-	push r4
-	ld r4, base_pointer, 3
-	sub r4, r5
-	push r4
-	ld r4, base_pointer, 2
-	add r4, r2
-	push r4
+	mov r1, 14
+	push r1
+	ld r1, base_pointer, 4
+	add r1, r5
+	push r1
+	ld r1, base_pointer, 3
+	sub r1, r2
+	push r1
+	ld r1, base_pointer, 2
+	add r1, r4
+	push r1
 	call __tptcc_fn_set_block
 	add stack_pointer, 4
 	.label_499:
-	mov r4, r3
-	add r3, 1
+	mov r1, r5
+	add r5, 1
 	jmp .label_498
 	.label_500:
 	.label_495:
-	mov r3, r2
-	add r2, 1
+	mov r1, r4
+	add r4, 1
 	jmp .label_494
 	.label_496:
 	.label_491:
-	mov r1, r5
-	add r5, 1
+	mov r1, r2
+	add r2, 1
 	jmp .label_490
 	.label_492:
 .exit_create_pyramid:
@@ -4081,64 +4064,64 @@ __tptcc_fn_create_scene:
 	push r3
 	push r4
 	push r5
-	mov r2, 0
+	mov r1, 0
 	.label_502:
-	mov r1, r2
-	cmp r1, 24
+	mov r2, r1
+	cmp r2, 24
 	jl .label_505
 	jmp .label_504
 	.label_505:
-	mov r3, 0
+	mov r2, 0
 	.label_506:
-	mov r1, r3
-	cmp r1, 2
+	mov r3, r2
+	cmp r3, 2
 	jl .label_509
 	jmp .label_508
 	.label_509:
-	mov r1, 0
+	mov r3, 0
 	.label_510:
-	mov r4, r1
+	mov r4, r3
 	cmp r4, 24
 	jl .label_513
 	jmp .label_512
 	.label_513:
-	mov r4, r3
+	mov r4, r2
 	cmp r4, 0
 	je .label_515
 	jmp .label_514
 	.label_515:
 	mov r4, 1
 	push r4
-	push r1
+	push r3
 	mov r4, 6
 	push r4
-	push r2
+	push r1
 	call __tptcc_fn_set_block
 	add stack_pointer, 4
 	jmp .label_516
 	.label_514:
 	mov r4, 7
 	push r4
-	push r1
+	push r3
 	mov r4, 7
 	push r4
-	push r2
+	push r1
 	call __tptcc_fn_set_block
 	add stack_pointer, 4
 	.label_516:
 	.label_511:
-	mov r4, r1
-	add r1, 1
+	mov r4, r3
+	add r3, 1
 	jmp .label_510
 	.label_512:
 	.label_507:
-	mov r1, r3
-	add r3, 1
+	mov r3, r2
+	add r2, 1
 	jmp .label_506
 	.label_508:
 	.label_503:
-	mov r1, r2
-	add r2, 1
+	mov r2, r1
+	add r1, 1
 	jmp .label_502
 	.label_504:
 	mov r1, 1
@@ -4216,21 +4199,21 @@ __tptcc_fn_main:
 	push r4
 	push r3
 	call __tptcc_fn_create_scene
-	mov r1, 64
+	mov r1, 48
 	push r1
 	mov r1, 10
 	push r1
 	call __tptcc_fn_add_to_inventory
 	add stack_pointer, 2
-	mov r1, 2
+	mov r1, 3
 	push r1
 	mov r1, 12
 	push r1
 	call __tptcc_fn_add_to_inventory
 	add stack_pointer, 2
-	mov r1, 64
+	mov r1, 7
 	push r1
-	mov r1, 4
+	mov r1, 6
 	push r1
 	call __tptcc_fn_add_to_inventory
 	add stack_pointer, 2

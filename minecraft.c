@@ -369,10 +369,21 @@ int sqrt(int n) {
 }
 
 void plot_square(int x, int y, int colour) {
-    plot(x * 2, y * 2, colour);
-    plot(x * 2 + 1, y * 2, colour);
-    plot(x * 2, y * 2 + 1, colour);
-    plot(x * 2 + 1, y * 2 + 1, colour);
+    asm(
+        "shl r1, 1"
+        "shl r2, 9"
+        "add r1, r2"
+        "st r1, r3, term_plot"
+        "add r1, 1"
+        "st r1, r3, term_plot"
+        "add r1, 0x100"
+        "st r1, r3, term_plot"
+        "sub r1, 1"
+        "st r1, r3, term_plot"
+        :r1=x, r2=y, r3=colour
+        :
+        :r1, r2, r3
+    );
 }
 
 
@@ -436,7 +447,7 @@ struct Vector3 default_hbasis = {58, 0, 0};
 struct Vector3 default_vbasis = {0, 58, 0};
 
 int get_vector_length(struct Vector3 *vector) {
-    // gets vector length in uq15.1
+    // gets vector length in q15.1
     register int x = vector->x << 1;
     register int y = vector->y << 1;
     register int z = vector->z << 1;
@@ -1062,7 +1073,7 @@ int main() {
 
     add_to_inventory(FURNACE, 48);
     add_to_inventory(BOOK_CASE, 3);
-    add_to_inventory(BRICKS, 64);
+    add_to_inventory(PLANKS, 7);
 
     struct Camera camera;
     camera.position.x = 8192 - 512;
