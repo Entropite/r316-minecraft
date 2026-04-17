@@ -751,7 +751,7 @@ void camera_render(struct Camera *camera) {
                         } else if(type == BOOK_CASE) {
                             colour = planks[u][v >> 2] >> 4 * (v ^ 3);
                         } else {
-                            int prev_tmax = tmax_y - delta_y;
+                            prev_tmax = tmax_y - delta_y;
                             u = ((prev_tmax * dx) >> 4) + rx;
                             u = u & 1023;
                             u = u >> 6;
